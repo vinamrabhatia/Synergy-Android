@@ -1,0 +1,31 @@
+package com.example.vinamra.synergy2;
+
+/**
+ * Created by vinamra on 12/11/17.
+ */
+
+import android.graphics.Bitmap;
+
+/**
+ * Created by mukesh on 18/5/15.
+ */
+public class Model {
+    String name;
+    Bitmap imaBitmap;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Bitmap getImage() {
+        return imaBitmap;
+    }
+
+    public void setImage(Bitmap imaBitmap) {
+        this.imaBitmap = imaBitmap;
+    }
+}

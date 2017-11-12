@@ -84,7 +84,7 @@ public class MainActivity extends Activity
             String title = intent.getStringExtra("title");
             String text = intent.getStringExtra("text");
             //int id = intent.getIntExtra("icon",0);
-            Log.e("Broadcast Received", title + text);
+            Log.v("Broadcast Received", title + text);
 
             if (mTcpClient != null) {
                 mTcpClient.sendMessage(title);
