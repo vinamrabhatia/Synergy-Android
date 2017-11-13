@@ -4,10 +4,14 @@ package com.example.vinamra.synergy2;
  * Created by vinamra on 12/11/17.
  */
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +24,8 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
 import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
 
 public class MainActivity extends Activity
 {
@@ -42,6 +48,24 @@ public class MainActivity extends Activity
         LocalBroadcastManager.getInstance(this).registerReceiver(onNotice, new IntentFilter("Msg"));
 
         arrayList = new ArrayList<String>();
+        Log.v("Looking for permissions", "Yes");
+        ActivityCompat.requestPermissions(MainActivity.this,
+                new String[]{Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE},
+                666);
+
+        Intent intent = new Intent(this, NotificationService.class); startService(intent);
+
+        Intent intent1=new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+        startActivity(intent1);
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE)
+                != PackageManager.PERMISSION_GRANTED)
+        {
+            Log.d(TAG, "permission denied");
+        }
+        else
+            Log.d(TAG, "permission granted");
 
         final EditText editText = (EditText) findViewById(R.id.editText);
         Button send = (Button)findViewById(R.id.send_button);
@@ -83,10 +107,14 @@ public class MainActivity extends Activity
             // String pack = intent.getStringExtra("package");
             String title = intent.getStringExtra("title");
             String text = intent.getStringExtra("text");
+            String ticker = intent.getStringExtra("ticker");
+            String pack = intent.getStringExtra("pack");
             //int id = intent.getIntExtra("icon",0);
             Log.v("Broadcast Received", title + text);
 
             if (mTcpClient != null) {
+                mTcpClient.sendMessage(pack);
+                mTcpClient.sendMessage(ticker);
                 mTcpClient.sendMessage(title);
                 mTcpClient.sendMessage(text);
             }
