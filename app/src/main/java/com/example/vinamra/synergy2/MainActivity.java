@@ -22,6 +22,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.support.v4.app.NotificationCompat;
 
 import java.util.ArrayList;
 
@@ -100,6 +103,23 @@ public class MainActivity extends Activity
 
     }
 
+    private void addNotification(String title, String text) {
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_stat_name)
+                        .setContentTitle(title)
+                        .setContentText(text);
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+
+        // Add as notification
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(0, builder.build());
+    }
+
     private BroadcastReceiver onNotice= new BroadcastReceiver() {
 
         @Override
@@ -163,6 +183,7 @@ public class MainActivity extends Activity
                 public void messageReceived(String message) {
                     //this method calls the onProgressUpdate
                     publishProgress(message);
+                    addNotification("Synergy", message);
                 }
             });
             mTcpClient.run();
